@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coming Soon | New Vision Express</title>
+    <meta name="description" content="New Vision Express — Trusted art logistics specialists. Coming soon." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --dark: #1C1C1A;
+        --gold: #C9B870;
+        --gold-light: #DDD090;
+        --white: #FFFFFF;
+        --muted: rgba(255,255,255,0.45);
+      }
+
+      html, body {
+        height: 100%;
+        background-color: var(--dark);
+        color: var(--white);
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .logo {
+        max-height: 72px;
+        width: auto;
+        margin-bottom: 3rem;
+      }
+
+      .eyebrow {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.65rem;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 1.5rem;
+      }
+
+      h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 300;
+        font-size: clamp(2.5rem, 8vw, 5.5rem);
+        line-height: 1.05;
+        color: var(--white);
+        margin-bottom: 1.5rem;
+      }
+
+      h1 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+
+      .divider {
+        width: 3rem;
+        height: 1px;
+        background-color: var(--gold);
+        margin: 2rem auto;
+      }
+
+      p {
+        font-family: 'Inter', sans-serif;
+        font-weight: 300;
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: var(--muted);
+        max-width: 480px;
+        margin: 0 auto 2rem;
+      }
+
+      .contact-link {
+        display: inline-block;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--gold);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(201, 184, 112, 0.3);
+        padding-bottom: 2px;
+        transition: border-color 0.2s, color 0.2s;
+      }
+
+      .contact-link:hover {
+        color: var(--gold-light);
+        border-color: var(--gold-light);
+      }
+
+      footer {
+        position: fixed;
+        bottom: 2rem;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.65rem;
+        color: rgba(255,255,255,0.2);
+        letter-spacing: 0.1em;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="/logo.png" alt="New Vision Express" class="logo" />
+
+    <p class="eyebrow">Art Logistics Specialists</p>
+
+    <h1>
+      Something <em>Exceptional</em><br />
+      Is on Its Way
+    </h1>
+
+    <div class="divider"></div>
+
+    <p>
+      New Vision Express is preparing to launch. We deliver your most
+      valuable works with white-glove care — ensuring every piece arrives
+      safely, on time, and with the precision it deserves.
+    </p>
+
+    <a href="mailto:info@newvisionexpress.com" class="contact-link">
+      info@newvisionexpress.com
+    </a>
+
+    <footer>
+      &copy; 2026 New Vision Express &nbsp;&middot;&nbsp; Reliability..to the last mile
+    </footer>
+  </body>
+</html>
