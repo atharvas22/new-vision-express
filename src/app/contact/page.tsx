@@ -10,17 +10,17 @@ export const metadata: Metadata = {
 const contactInfo = [
   {
     label: "Phone",
-    value: "+91 98765 43210",
-    href: "tel:+919876543210",
+    value: "+91 81085 99952",
+    href: "tel:+918108599952",
   },
   {
     label: "Email",
-    value: "info@newvisionexpress.com",
-    href: "mailto:info@newvisionexpress.com",
+    value: "sales@newvisionexpress.com",
+    href: "mailto:sales@newvisionexpress.com",
   },
   {
     label: "Address",
-    value: "123 Art District, Bandra West\nMumbai, Maharashtra 400050",
+    value: "11D-2, Devadiga CS, Om Nagar\nAndheri East, Mumbai – 400099",
     href: null,
   },
   {

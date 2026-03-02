@@ -57,24 +57,24 @@ export default function Footer() {
             <ul className="space-y-3 font-body text-sm text-white/60">
               <li>
                 <a
-                  href="tel:+919876543210"
+                  href="tel:+918108599952"
                   className="hover:text-brand-gold transition-colors"
                 >
-                  +91 98765 43210
+                  +91 81085 99952
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:info@newvisionexpress.com"
+                  href="mailto:sales@newvisionexpress.com"
                   className="hover:text-brand-gold transition-colors"
                 >
-                  info@newvisionexpress.com
+                  sales@newvisionexpress.com
                 </a>
               </li>
               <li className="text-white/40 leading-relaxed">
-                123 Art District, Bandra West
+                11D-2, Devadiga CS, Om Nagar
                 <br />
-                Mumbai, Maharashtra 400050
+                Andheri East, Mumbai – 400099
               </li>
             </ul>
           </div>

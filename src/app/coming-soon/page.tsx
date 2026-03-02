@@ -43,10 +43,10 @@ export default function ComingSoonPage() {
       </p>
 
       <a
-        href="mailto:info@newvisionexpress.com"
+        href="mailto:sales@newvisionexpress.com"
         className="font-body text-xs tracking-widest uppercase text-brand-gold border-b border-brand-gold/30 pb-1 hover:border-brand-gold transition-colors duration-200"
       >
-        info@newvisionexpress.com
+        sales@newvisionexpress.com
       </a>
 
       {/* Footer */}
