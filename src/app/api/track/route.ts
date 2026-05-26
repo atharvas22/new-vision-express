@@ -3,16 +3,37 @@ import { NextRequest, NextResponse } from "next/server";
 const WORKER_BASE = "https://airwaybill-worker.suyesh.workers.dev";
 const ORG = "nve";
 
-// JWT cached at module level — survives warm Lambda invocations
+// --- Auth ---
+// Prefer a static long-lived token (NVE_TOKEN).
+// If absent or expired, fall back to email/password login (NVE_EMAIL + NVE_PASSWORD).
 let cachedToken: { value: string; expiry: number } | null = null;
+
+function parseJwtExpiry(token: string): number {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (payload.exp) return payload.exp * 1000;
+  } catch { /* ignore */ }
+  return Date.now() + 23 * 60 * 60 * 1000; // default 23 h
+}
 
 async function getJwt(): Promise<string> {
   const now = Date.now();
+  const buffer = 5 * 60 * 1000; // refresh 5 min before expiry
 
-  if (cachedToken && cachedToken.expiry > now + 5 * 60 * 1000) {
+  // 1. Static token from env (e.g. copied from admin localStorage)
+  const staticToken = process.env.NVE_TOKEN;
+  if (staticToken) {
+    const expiry = parseJwtExpiry(staticToken);
+    if (expiry > now + buffer) return staticToken;
+    // Token exists but expired — fall through to credential login
+  }
+
+  // 2. Cached token from a previous credential login
+  if (cachedToken && cachedToken.expiry > now + buffer) {
     return cachedToken.value;
   }
 
+  // 3. Login with credentials
   const res = await fetch(`${WORKER_BASE}/api/auth/login?org=${ORG}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -23,32 +44,24 @@ async function getJwt(): Promise<string> {
     cache: "no-store",
   });
 
-  if (!res.ok) throw new Error("Worker authentication failed");
+  if (!res.ok) throw new Error("Worker authentication failed — check NVE_EMAIL / NVE_PASSWORD env vars");
 
   const data = await res.json() as any;
   const token: string = data.data?.token;
-  if (!token) throw new Error("No token in auth response");
+  if (!token) throw new Error("No token returned from auth endpoint");
 
-  // Parse JWT expiry; fall back to 23 h
-  let expiry = now + 23 * 60 * 60 * 1000;
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload.exp) expiry = payload.exp * 1000;
-  } catch { /* keep default */ }
-
-  cachedToken = { value: token, expiry };
+  cachedToken = { value: token, expiry: parseJwtExpiry(token) };
   return token;
 }
 
+// --- Handler ---
 export async function GET(request: NextRequest) {
   const waybill = request.nextUrl.searchParams.get("waybill")?.trim();
-
   if (!waybill) {
     return NextResponse.json({ error: "Waybill number is required" }, { status: 400 });
   }
 
-  const clean = waybill.replace(/[^\w\-]/g, "");
-  const encoded = encodeURIComponent(clean);
+  const encoded = encodeURIComponent(waybill.replace(/[^\w\-]/g, ""));
 
   try {
     const token = await getJwt();
@@ -58,14 +71,8 @@ export async function GET(request: NextRequest) {
     };
 
     const [shipmentRes, eventsRes] = await Promise.all([
-      fetch(`${WORKER_BASE}/api/shipments/${encoded}?org=${ORG}`, {
-        headers,
-        next: { revalidate: 30 },
-      }),
-      fetch(`${WORKER_BASE}/api/tracking_events?waybill_number=${encoded}&org=${ORG}`, {
-        headers,
-        next: { revalidate: 30 },
-      }),
+      fetch(`${WORKER_BASE}/api/shipments/${encoded}?org=${ORG}`, { headers, next: { revalidate: 30 } }),
+      fetch(`${WORKER_BASE}/api/tracking_events?waybill_number=${encoded}&org=${ORG}`, { headers, next: { revalidate: 30 } }),
     ]);
 
     if (!shipmentRes.ok) {
@@ -75,14 +82,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const shipmentData = await shipmentRes.json() as any;
-    const eventsData = eventsRes.ok ? await eventsRes.json() as any : null;
-
-    const s = shipmentData.data || shipmentData;
-    const trackingEvents =
-      eventsData?.success && eventsData.data?.tracking_events
-        ? eventsData.data.tracking_events
-        : s.trackingEvents || [];
+    const sd = await shipmentRes.json() as any;
+    const ed = eventsRes.ok ? await eventsRes.json() as any : null;
+    const s = sd.data || sd;
 
     return NextResponse.json({
       success: true,
@@ -99,11 +101,13 @@ export async function GET(request: NextRequest) {
         pickupDate: s.pickupDate,
         deliveryDate: s.deliveryDate,
         description: s.description,
-        trackingEvents,
+        trackingEvents: ed?.success && ed.data?.tracking_events ? ed.data.tracking_events : s.trackingEvents || [],
       },
     });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Service temporarily unavailable";
-    return NextResponse.json({ error: msg }, { status: 503 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Service temporarily unavailable" },
+      { status: 503 }
+    );
   }
 }
