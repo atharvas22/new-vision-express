@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import ServicesSection from "@/components/ServicesSection";
+import TrackingClient from "@/components/TrackingClient";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -52,6 +53,20 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Shipment Tracking */}
+      <section className="py-24 px-6 bg-brand-bg border-t border-brand-card">
+        <div className="max-w-2xl mx-auto text-center mb-12">
+          <p className="text-brand-gold text-xs font-body tracking-[0.4em] uppercase mb-4">
+            Shipment Status
+          </p>
+          <h2 className="font-heading text-4xl md:text-5xl text-brand-ink font-light leading-tight">
+            Track Your Shipment
+          </h2>
+          <div className="mt-5 w-10 h-px bg-brand-gold mx-auto" />
+        </div>
+        <TrackingClient />
       </section>
 
       {/* Contact CTA Band */}
