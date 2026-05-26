@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 const WORKER_BASE = "https://airwaybill-worker.suyesh.workers.dev";
 const ORG = "nve";
+// API key is kept server-side only — never sent to the browser
+const API_KEY = process.env.NVE_API_KEY ?? "";
+
+function workerHeaders(): HeadersInit {
+  const h: HeadersInit = { Accept: "application/json" };
+  if (API_KEY) h["Authorization"] = `Bearer ${API_KEY}`;
+  return h;
+}
 
 export async function GET(request: NextRequest) {
   const waybill = request.nextUrl.searchParams.get("waybill")?.trim();
@@ -16,13 +24,13 @@ export async function GET(request: NextRequest) {
   try {
     const [shipmentRes, eventsRes] = await Promise.all([
       fetch(`${WORKER_BASE}/api/shipments/${encoded}?org=${ORG}`, {
-        headers: { Accept: "application/json" },
+        headers: workerHeaders(),
         next: { revalidate: 30 },
       }),
       fetch(
         `${WORKER_BASE}/api/tracking_events?waybill_number=${encoded}&org=${ORG}`,
         {
-          headers: { Accept: "application/json" },
+          headers: workerHeaders(),
           next: { revalidate: 30 },
         }
       ),
