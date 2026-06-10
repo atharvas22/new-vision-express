@@ -32,7 +32,6 @@ interface ShipmentResult {
   waybillDate?: string;
   pickupDate?: string;
   deliveryDate?: string;
-  description?: string;
   trackingEvents: TrackingEvent[];
 }
 
@@ -404,15 +403,6 @@ export default function TrackingClient() {
                 </div>
               ))}
             </div>
-
-            {result.description && (
-              <div className="px-5 py-4 border border-brand-card">
-                <p className="font-body text-xs text-brand-muted/60 uppercase tracking-widest mb-1">
-                  Contents
-                </p>
-                <p className="font-body text-sm text-brand-muted">{result.description}</p>
-              </div>
-            )}
 
             {/* Tracking timeline */}
             <div>

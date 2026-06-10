@@ -27,7 +27,32 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ success: true, shipment: data.data });
+    // Whitelist the fields exposed publicly — the upstream record contains
+    // sensitive data (shipment contents, consignee details) that must not
+    // reach the browser.
+    const s = data.data;
+    const shipment = {
+      waybillNumber: s.waybillNumber,
+      shipmentStatus: s.shipmentStatus,
+      origin: s.origin,
+      destination: s.destination,
+      consigneeCity: s.consigneeCity,
+      consignorCity: s.consignorCity,
+      transportMode: s.transportMode,
+      totalPackages: s.totalPackages,
+      waybillDate: s.waybillDate,
+      pickupDate: s.pickupDate,
+      deliveryDate: s.deliveryDate,
+      trackingEvents: (s.trackingEvents ?? []).map((e: any) => ({
+        id: e.id,
+        status: e.status,
+        timestamp: e.timestamp,
+        location: e.location,
+        description: e.description,
+      })),
+    };
+
+    return NextResponse.json({ success: true, shipment });
   } catch {
     return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
   }
