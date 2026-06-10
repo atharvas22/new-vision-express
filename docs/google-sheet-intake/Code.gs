@@ -9,7 +9,7 @@
 
 // Where to send the "new lead" notification email.
 // MailApp sends from the Google account that owns this script.
-const NOTIFY_EMAIL = "atharva@newvisionexpress.com";
+const NOTIFY_EMAIL = "atharva@newvisionexpressart.com";
 
 // The intake spreadsheet. Opening by ID works whether this script is
 // bound to the sheet or standalone.
