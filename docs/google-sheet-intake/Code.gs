@@ -11,6 +11,10 @@
 // MailApp sends from the Google account that owns this script.
 const NOTIFY_EMAIL = "atharva@newvisionexpress.com";
 
+// The intake spreadsheet. Opening by ID works whether this script is
+// bound to the sheet or standalone.
+const SHEET_ID = "1VkgXBntfJQJTD9r2ZlpPNapceh8lpy2VxGK50WjLVf4";
+
 function doPost(e) {
   let data;
   try {
@@ -19,7 +23,7 @@ function doPost(e) {
     return jsonResponse({ success: false, error: "Invalid payload" });
   }
 
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById(SHEET_ID);
 
   // One tab per form type — "Contact" now, "Quote" can reuse this later.
   const tabName = data.formType === "quote" ? "Quote" : "Contact";
