@@ -74,6 +74,28 @@ function doPost(e) {
   return jsonResponse({ success: true });
 }
 
+/**
+ * Run this once from the editor (select "testSetup" in the toolbar, click
+ * Run) to grant permissions and verify the whole flow: it appends a test
+ * row to the Contact tab and sends a test notification email.
+ */
+function testSetup() {
+  const e = {
+    postData: {
+      contents: JSON.stringify({
+        formType: "contact",
+        name: "Test from editor",
+        email: "test@example.com",
+        phone: "+91 00000 00000",
+        service: "Setup check",
+        message: "If you can read this in the sheet and got an email, everything works. Safe to delete.",
+      }),
+    },
+  };
+  const result = doPost(e).getContent();
+  Logger.log(result);
+}
+
 function jsonResponse(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(
     ContentService.MimeType.JSON
