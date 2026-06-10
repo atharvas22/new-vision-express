@@ -72,9 +72,9 @@ export default function Footer() {
                 </a>
               </li>
               <li className="text-white/40 leading-relaxed">
-                11D-2, Devadiga CS, Om Nagar
+                B-2/11, Devadika Society, next to Jeena House
                 <br />
-                Andheri East, Mumbai – 400099
+                Om Nagar Circle, Andheri East, Mumbai – 400099
               </li>
             </ul>
           </div>
