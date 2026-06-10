@@ -20,7 +20,8 @@ const contactInfo = [
   },
   {
     label: "Address",
-    value: "11D-2, Devadiga CS, Om Nagar\nAndheri East, Mumbai – 400099",
+    value:
+      "B-2/11, Devadika Society, next to Jeena House\nOm Nagar Circle, Andheri East, Mumbai – 400099",
     href: null,
   },
   {
