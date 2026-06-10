@@ -15,12 +15,15 @@ const serviceOptions = [
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
     phone: "",
     service: "",
     message: "",
+    website: "", // honeypot — hidden from real users
   });
 
   function handleChange(
@@ -31,11 +34,34 @@ export default function ContactForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO: wire up to Formspree or email service
-    console.log("Form submitted:", form);
-    setSubmitted(true);
+    setError("");
+    setSending(true);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        const data = await res.json().catch(() => null);
+        setError(
+          data?.error ||
+            "Something went wrong. Please email us at sales@newvisionexpress.com."
+        );
+      }
+    } catch {
+      setError(
+        "Could not send your message. Please email us at sales@newvisionexpress.com."
+      );
+    } finally {
+      setSending(false);
+    }
   }
 
   if (submitted) {
@@ -143,11 +169,28 @@ export default function ContactForm() {
         />
       </div>
 
+      {/* Honeypot — hidden from real users, catches bots */}
+      <input
+        type="text"
+        name="website"
+        value={form.website}
+        onChange={handleChange}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="hidden"
+      />
+
+      {error && (
+        <p className="font-body text-sm text-red-600">{error}</p>
+      )}
+
       <button
         type="submit"
-        className="px-10 py-4 bg-brand-dark text-white font-body text-xs tracking-widest uppercase hover:bg-brand-ink transition-colors duration-200"
+        disabled={sending}
+        className="px-10 py-4 bg-brand-dark text-white font-body text-xs tracking-widest uppercase hover:bg-brand-ink transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Send Message
+        {sending ? "Sending..." : "Send Message"}
       </button>
     </form>
   );
